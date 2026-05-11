@@ -116,9 +116,9 @@ passwordForm.addEventListener("submit", async (e) => {
     progressBar.style.width = "40%";
 
     await Archive.init({
-      wasmUrl: "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/libarchive.wasm"
+      wasmUrl: "./libarchive.wasm",
+      workerUrl: "./worker-bundle.js"
     });
-
     progressBar.style.width = "60%";
 
     const archive = await Archive.open(arrayBuffer, { password });

@@ -5,9 +5,9 @@ const ASSETS = [
   "./styles.css",
   "./app.js",
   "./manifest.json",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css",
-  "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/libarchive.js",
-  "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/libarchive.wasm"
+  "./worker-bundle.js",
+  "./libarchive.wasm",
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
 ];
 
 self.addEventListener("install", (e) => {
