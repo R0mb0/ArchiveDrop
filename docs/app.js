@@ -121,7 +121,9 @@ passwordForm.addEventListener("submit", async (e) => {
     });
     progressBar.style.width = "60%";
 
-    const entries = await Archive.open(selectedFile, { password });
+    const archive = await Archive.open(selectedFile, { password });
+
+    const entries = await archive.getFilesArray();
 
     const files = [];
     for (const entry of entries) {
