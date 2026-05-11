@@ -121,12 +121,10 @@ passwordForm.addEventListener("submit", async (e) => {
     });
     progressBar.style.width = "60%";
 
-    const archive = await Archive.open(selectedFile, { password });
+    const entries = await Archive.open(selectedFile, { password });
 
     const files = [];
-    let entry;
-
-    while ((entry = await archive.nextEntry()) !== null) {
+    for (const entry of entries) {
       if (entry.filetype === "file") {
         const content = await entry.readData();
         files.push({
