@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#0ea5e9" />
-  <!-- Icone -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
 <body>
@@ -47,6 +46,12 @@
         <span id="files-count">0</span>
       </div>
 
+      <div class="search-row">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="search-input" type="text" placeholder="Cerca file..." />
+      </div>
+
+      <div class="tree-view" id="tree-view"></div>
       <div class="file-table" id="file-table"></div>
 
       <div class="actions">
@@ -57,6 +62,15 @@
       <button id="reset-btn" class="btn secondary full">Apri un altro archivio</button>
     </section>
   </main>
+
+  <!-- Modal preview immagini -->
+  <div id="image-modal" class="modal hidden">
+    <div class="modal-content">
+      <button id="modal-close" class="modal-close">×</button>
+      <img id="modal-image" alt="preview" />
+      <div id="modal-caption"></div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/libarchive.js"></script>
   <script src="app.js"></script>

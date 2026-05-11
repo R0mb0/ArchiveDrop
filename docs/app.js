@@ -13,7 +13,8 @@ const i18n = {
     share: "Condividi",
     downloadAll: "Scarica tutti",
     shareAll: "Condividi tutti",
-    reset: "Apri un altro archivio"
+    reset: "Apri un altro archivio",
+    search: "Cerca file..."
   },
   en: {
     title: "ZipFlow",
@@ -29,7 +30,8 @@ const i18n = {
     share: "Share",
     downloadAll: "Download all",
     shareAll: "Share all",
-    reset: "Open another archive"
+    reset: "Open another archive",
+    search: "Search files..."
   }
 };
 
@@ -47,6 +49,7 @@ document.getElementById("files-title").textContent = t.files;
 document.getElementById("download-all").textContent = t.downloadAll;
 document.getElementById("share-all").textContent = t.shareAll;
 document.getElementById("reset-btn").textContent = t.reset;
+document.getElementById("search-input").placeholder = t.search;
 
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("file-input");
@@ -59,9 +62,18 @@ const progressText = document.getElementById("progress-text");
 const passwordInput = document.getElementById("password-input");
 const fileTable = document.getElementById("file-table");
 const filesCount = document.getElementById("files-count");
+const searchInput = document.getElementById("search-input");
+const treeView = document.getElementById("tree-view");
+
+const modal = document.getElementById("image-modal");
+const modalImage = document.getElementById("modal-image");
+const modalCaption = document.getElementById("modal-caption");
+document.getElementById("modal-close").onclick = () => modal.classList.add("hidden");
+modal.onclick = (e) => { if (e.target === modal) modal.classList.add("hidden"); };
 
 let selectedFile = null;
 let extractedFiles = [];
+let filteredFiles = [];
 
 dropzone.addEventListener("dragover", (e) => {
   e.preventDefault();
@@ -117,6 +129,9 @@ startBtn.addEventListener("click", async () => {
     }
 
     extractedFiles = files;
+    filteredFiles = files;
+
+    renderTree(files);
     renderTable(files);
 
     progressBar.style.width = "100%";
@@ -126,6 +141,60 @@ startBtn.addEventListener("click", async () => {
     progressText.textContent = "Errore: " + err.message;
   }
 });
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase().trim();
+  filteredFiles = extractedFiles.filter(f => f.name.toLowerCase().includes(q));
+  renderTree(filteredFiles);
+  renderTable(filteredFiles);
+});
+
+function renderTree(files) {
+  treeView.innerHTML = "";
+  const tree = buildTree(files);
+
+  for (const node of Object.values(tree)) {
+    treeView.appendChild(renderNode(node));
+  }
+}
+
+function buildTree(files) {
+  const root = {};
+  for (const file of files) {
+    const parts = file.name.split("/");
+    let current = root;
+    parts.forEach((part, i) => {
+      const isFile = i === parts.length - 1;
+      current[part] = current[part] || { name: part, children: {}, files: [], isFile };
+      if (isFile) current[part].files.push(file);
+      current = current[part].children;
+    });
+  }
+  return root;
+}
+
+function renderNode(node) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "tree-node";
+
+  const label = document.createElement("div");
+  label.className = "label";
+  label.innerHTML = `<i class="fa-solid ${node.isFile ? "fa-file" : "fa-folder"}"></i><span>${node.name}</span>`;
+  wrapper.appendChild(label);
+
+  if (!node.isFile) {
+    const children = document.createElement("div");
+    children.className = "tree-children";
+    for (const child of Object.values(node.children)) {
+      children.appendChild(renderNode(child));
+    }
+    wrapper.appendChild(children);
+
+    label.onclick = () => wrapper.classList.toggle("collapsed");
+  }
+
+  return wrapper;
+}
 
 function renderTable(files) {
   fileTable.innerHTML = "";
@@ -159,6 +228,7 @@ function renderTable(files) {
       const img = document.createElement("img");
       img.className = "file-preview";
       img.src = URL.createObjectURL(file.blob);
+      img.onclick = () => openModal(img.src, file.name);
       left.appendChild(img);
     }
     left.appendChild(info);
@@ -183,6 +253,12 @@ function renderTable(files) {
     row.appendChild(actions);
     fileTable.appendChild(row);
   }
+}
+
+function openModal(src, name) {
+  modalImage.src = src;
+  modalCaption.textContent = name;
+  modal.classList.remove("hidden");
 }
 
 function isImage(filename) {
@@ -252,6 +328,7 @@ document.getElementById("share-all").addEventListener("click", async () => {
 document.getElementById("reset-btn").addEventListener("click", () => {
   selectedFile = null;
   extractedFiles = [];
+  filteredFiles = [];
   fileInput.value = "";
   uploadSection.classList.remove("hidden");
   progressSection.classList.add("hidden");
@@ -264,7 +341,7 @@ function waitForUser(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// PWA: register service worker
+// PWA
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("sw.js");
 }
