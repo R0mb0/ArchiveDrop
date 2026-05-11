@@ -124,7 +124,9 @@ passwordForm.addEventListener("submit", async (e) => {
     const archive = await Archive.open(selectedFile, { password });
 
     const files = [];
-    for await (const entry of archive) {
+    let entry;
+
+    while ((entry = await archive.nextEntry()) !== null) {
       if (entry.filetype === "file") {
         const content = await entry.readData();
         files.push({
