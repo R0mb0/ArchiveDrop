@@ -36,7 +36,6 @@ const i18n = {
 const isItalian = navigator.language?.toLowerCase().startsWith("it");
 const t = isItalian ? i18n.it : i18n.en;
 
-// apply translations
 document.getElementById("title").textContent = t.title;
 document.getElementById("subtitle").textContent = t.subtitle;
 document.getElementById("drop-text").textContent = t.dropText;
@@ -142,11 +141,27 @@ function renderTable(files) {
     const icon = document.createElement("i");
     icon.className = getIconByExt(file.name);
 
-    const name = document.createElement("span");
-    name.textContent = file.name;
+    const info = document.createElement("div");
+    const main = document.createElement("span");
+    main.className = "main";
+    main.textContent = file.name.split("/").pop();
+
+    const path = document.createElement("span");
+    path.className = "path";
+    const folderPath = file.name.includes("/") ? file.name.split("/").slice(0, -1).join("/") : "";
+    path.textContent = folderPath ? `/${folderPath}/` : "";
+
+    info.appendChild(main);
+    info.appendChild(path);
 
     left.appendChild(icon);
-    left.appendChild(name);
+    if (isImage(file.name)) {
+      const img = document.createElement("img");
+      img.className = "file-preview";
+      img.src = URL.createObjectURL(file.blob);
+      left.appendChild(img);
+    }
+    left.appendChild(info);
 
     const actions = document.createElement("div");
     actions.className = "file-actions";
@@ -168,6 +183,10 @@ function renderTable(files) {
     row.appendChild(actions);
     fileTable.appendChild(row);
   }
+}
+
+function isImage(filename) {
+  return /\.(png|jpg|jpeg|gif|webp)$/i.test(filename);
 }
 
 function getIconByExt(filename) {
@@ -243,4 +262,9 @@ document.getElementById("reset-btn").addEventListener("click", () => {
 
 function waitForUser(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+// PWA: register service worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
 }

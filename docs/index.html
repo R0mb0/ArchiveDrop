@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ZipFlow — Unpack & Share</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0ea5e9" />
   <!-- Icone -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 </head>
@@ -15,7 +17,6 @@
       <p id="subtitle">Estrai e condividi file in modo privato, direttamente dal browser.</p>
     </header>
 
-    <!-- STEP: UPLOAD -->
     <section id="upload-section" class="card">
       <div id="dropzone" class="dropzone">
         <input id="file-input" type="file" accept=".zip,.rar,.7z" />
@@ -27,7 +28,6 @@
       </div>
     </section>
 
-    <!-- STEP: PASSWORD + PROGRESS -->
     <section id="progress-section" class="card hidden">
       <div class="row">
         <label id="password-label" for="password-input">Password (se richiesta)</label>
@@ -41,7 +41,6 @@
       <p id="progress-text">In attesa...</p>
     </section>
 
-    <!-- STEP: TABLE -->
     <section id="table-section" class="card hidden">
       <div class="table-header">
         <h2 id="files-title">File estratti</h2>
