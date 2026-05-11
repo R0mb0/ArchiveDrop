@@ -100,7 +100,11 @@ function handleFile(file) {
   progressText.textContent = t.waiting;
 }
 
-startBtn.addEventListener("click", async () => {
+const passwordForm = document.getElementById("password-form");
+
+passwordForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
   if (!selectedFile) return;
   progressText.textContent = t.extracting;
   progressBar.style.width = "20%";

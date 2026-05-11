@@ -28,11 +28,13 @@
     </section>
 
     <section id="progress-section" class="card hidden">
-      <div class="row">
-        <label id="password-label" for="password-input">Password (se richiesta)</label>
-        <input id="password-input" type="password" placeholder="Inserisci password" />
-      </div>
-      <button id="start-btn" class="btn primary">Avvia estrazione</button>
+      <form id="password-form">
+        <div class="row">
+          <label id="password-label" for="password-input">Password (se richiesta)</label>
+          <input id="password-input" type="password" placeholder="Inserisci password" />
+        </div>
+        <button id="start-btn" type="submit" class="btn primary">Avvia estrazione</button>
+      </form>
 
       <div class="progress">
         <div id="progress-bar" class="progress-bar"></div>

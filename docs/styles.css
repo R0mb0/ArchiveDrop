@@ -223,6 +223,9 @@ body {
   justify-content: center;
   z-index: 99;
 }
+.modal.hidden {
+  display: none;
+}
 .modal-content {
   max-width: 92vw;
   max-height: 92vh;
