@@ -1,4 +1,4 @@
-import * as LibArchive from "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/libarchive.js";
+import { Archive } from "https://cdn.jsdelivr.net/npm/libarchive.js@2.0.2/dist/libarchive.js";
 
 const i18n = {
   it: {
