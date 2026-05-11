@@ -1,4 +1,4 @@
-const CACHE = "zipflow-v1";
+const CACHE = "zipflow-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,12 +6,23 @@ const ASSETS = [
   "./app.js",
   "./manifest.json",
   "./worker-bundle.js",
-  "./libarchive.wasm",
-  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  "./libarchive.wasm"
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(ASSETS)));
+  e.waitUntil(
+    (async () => {
+      const cache = await caches.open(CACHE);
+      for (const asset of ASSETS) {
+        try {
+          await cache.add(asset);
+        } catch (err) {
+          // ignora errori singoli per evitare blocchi
+          console.warn("Cache skip:", asset, err);
+        }
+      }
+    })()
+  );
   self.skipWaiting();
 });
 
