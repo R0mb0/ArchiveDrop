@@ -127,14 +127,17 @@ passwordForm.addEventListener("submit", async (e) => {
 
     const files = [];
     for (const entry of entries) {
-      if (entry.filetype === "file") {
+      // accetta tutto ciò che ha readData()
+      if (typeof entry.readData === "function") {
         const content = await entry.readData();
         files.push({
-          name: entry.pathname,
+          name: entry.pathname || entry.path || entry.filename,
           blob: new Blob([content]),
         });
       }
     }
+
+
 
     extractedFiles = files;
     filteredFiles = files;
