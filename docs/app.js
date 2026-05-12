@@ -1,4 +1,4 @@
-import { Archive } from "libarchive.js";
+import { Archive } from "./libarchive.js";
 
 const i18n = {
   it: {
