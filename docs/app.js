@@ -204,7 +204,9 @@ function renderTree(files) {
   const tree = buildTree(files);
 
   for (const node of Object.values(tree)) {
-    treeView.appendChild(renderNode(node));
+    if (!node.isFile) {
+      treeView.appendChild(renderNode(node));
+    }
   }
 }
 
@@ -229,17 +231,20 @@ function renderNode(node) {
 
   const label = document.createElement("div");
   label.className = "label";
-  label.innerHTML = `<i class="fa-solid ${node.isFile ? "fa-file" : "fa-folder"}"></i><span>${node.name}</span>`;
+  label.innerHTML = `<i class="fa-solid fa-folder"></i><span>${node.name}</span>`;
   wrapper.appendChild(label);
 
-  if (!node.isFile) {
-    const children = document.createElement("div");
-    children.className = "tree-children";
-    for (const child of Object.values(node.children)) {
+  const children = document.createElement("div");
+  children.className = "tree-children";
+
+  for (const child of Object.values(node.children)) {
+    if (!child.isFile) {
       children.appendChild(renderNode(child));
     }
-    wrapper.appendChild(children);
+  }
 
+  if (children.childElementCount) {
+    wrapper.appendChild(children);
     label.onclick = () => wrapper.classList.toggle("collapsed");
   }
 
