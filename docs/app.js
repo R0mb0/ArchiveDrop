@@ -121,23 +121,24 @@ passwordForm.addEventListener("submit", async (e) => {
     });
     progressBar.style.width = "60%";
 
-    const archive = await Archive.open(selectedFile, { password });
+    const archiveOrEntries = await Archive.open(selectedFile, { password });
 
-    const entries = await archive.getFilesArray();
+    const entries = await normalizeEntries(archiveOrEntries);
+
+    if (!entries.length) {
+      progressText.textContent = "Nessun file trovato nell'archivio.";
+      return;
+    }
 
     const files = [];
     for (const entry of entries) {
-      // accetta tutto ciò che ha readData()
-      if (typeof entry.readData === "function") {
-        const content = await entry.readData();
-        files.push({
-          name: entry.pathname || entry.path || entry.filename,
-          blob: new Blob([content]),
-        });
-      }
+      if (typeof entry.readData !== "function") continue;
+      const content = await entry.readData();
+      files.push({
+        name: entry.pathname || entry.path || entry.filename || "file",
+        blob: new Blob([content]),
+      });
     }
-
-
 
     extractedFiles = files;
     filteredFiles = files;
@@ -159,6 +160,20 @@ searchInput.addEventListener("input", () => {
   renderTree(filteredFiles);
   renderTable(filteredFiles);
 });
+
+async function normalizeEntries(archiveOrEntries) {
+  if (Array.isArray(archiveOrEntries)) return archiveOrEntries;
+
+  if (archiveOrEntries?.getFilesArray) {
+    const entries = await archiveOrEntries.getFilesArray();
+    if (entries?.length) return entries;
+  }
+
+  if (Array.isArray(archiveOrEntries?.files)) return archiveOrEntries.files;
+  if (Array.isArray(archiveOrEntries?.entries)) return archiveOrEntries.entries;
+
+  return [];
+}
 
 function renderTree(files) {
   treeView.innerHTML = "";
