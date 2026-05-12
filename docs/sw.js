@@ -1,4 +1,4 @@
-const CACHE = "zipflow-v2";
+const CACHE = "ArchiveDrop-v2";
 const ASSETS = [
   "./",
   "./index.html",

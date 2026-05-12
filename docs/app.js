@@ -2,7 +2,7 @@ import { Archive } from "./libarchive.js";
 
 const i18n = {
   it: {
-    title: "ZipFlow",
+    title: "ArchiveDrop",
     subtitle: "Estrai e condividi file in modo privato, direttamente dal browser.",
     dropText: "Clicca per caricare o trascina qui il file",
     dropSubtext: "Supporta ZIP / RAR / 7Z (anche con password)",
@@ -19,7 +19,7 @@ const i18n = {
     search: "Cerca file..."
   },
   en: {
-    title: "ZipFlow",
+    title: "ArchiveDrop",
     subtitle: "Extract and share files privately, directly in your browser.",
     dropText: "Click to upload or drag the file here",
     dropSubtext: "Supports ZIP / RAR / 7Z (with password)",
