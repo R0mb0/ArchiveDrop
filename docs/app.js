@@ -121,23 +121,47 @@ passwordForm.addEventListener("submit", async (e) => {
     });
     progressBar.style.width = "60%";
 
-    const archiveOrEntries = await Archive.open(selectedFile, { password });
+    const archive = await Archive.open(selectedFile, { password });
 
-    const entries = await normalizeEntries(archiveOrEntries);
+    let files = [];
 
-    if (!entries.length) {
-      progressText.textContent = "Nessun file trovato nell'archivio.";
-      return;
+    if (typeof archive.extractFiles === "function") {
+      const extracted = await archive.extractFiles();
+
+      // Caso A: array di entry
+      if (Array.isArray(extracted)) {
+        for (const item of extracted) {
+          const data = item.file || item.data || item.content || item;
+          const name = item.path || item.name || item.filename || "file";
+          if (data) {
+            files.push({ name, blob: new Blob([data]) });
+          }
+        }
+      }
+
+      // Caso B: object { "path/file": Uint8Array }
+      if (!files.length && extracted && typeof extracted === "object") {
+        for (const [name, data] of Object.entries(extracted)) {
+          if (data) {
+            files.push({ name, blob: new Blob([data]) });
+          }
+        }
+      }
+    } else if (typeof archive.getFilesArray === "function") {
+      const entries = await archive.getFilesArray();
+      for (const entry of entries) {
+        if (typeof entry.readData !== "function") continue;
+        const content = await entry.readData();
+        files.push({
+          name: entry.pathname || entry.path || entry.filename || "file",
+          blob: new Blob([content]),
+        });
+      }
     }
 
-    const files = [];
-    for (const entry of entries) {
-      if (typeof entry.readData !== "function") continue;
-      const content = await entry.readData();
-      files.push({
-        name: entry.pathname || entry.path || entry.filename || "file",
-        blob: new Blob([content]),
-      });
+    if (!files.length) {
+      progressText.textContent = "Nessun file trovato: formato non supportato o libreria non compatibile.";
+      return;
     }
 
     extractedFiles = files;
